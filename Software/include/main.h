@@ -15,18 +15,14 @@
 #include "freertos/task.h"
 #include "sdkconfig.h"
 
-
-
 /* Configuración general  */
 #include "config.h"
 
 /* Nivel de abstracción APID */
 #include "mqtt.h"
 #include "wifi.h"
-// #include "io.h"
-// #include "crono.h"
-// #include "sd.h"
 
-#include "scd_folino.h"
+/* Configuración pwm */
+#include "pwm.h"
 
 #endif /* MAIN_H_ */

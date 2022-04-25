@@ -12,7 +12,7 @@
 
 #include "config.h"
 #include "wifi.h"
-#include "scd_folino.h"
+#include "pwm.h"
 #include "mqtt.h"
 
 /* TAGs */
@@ -67,7 +67,6 @@ void MQTT_publish(const char * topic, const char * mensaje) {
 
    /* Acciones a ejecutar para cada topic recibido */
 
-   // Ingresar código aquí
    if(strcmp("test/led", topic)==0) {
         printf("MQTT: Mensaje recibido: %s\n", msg);
         IO_toggleLed();
@@ -78,31 +77,38 @@ void MQTT_publish(const char * topic, const char * mensaje) {
    }
    if(strcmp("pid/kp", topic)==0) {
         printf("MQTT: PID-> kp: %s\n", msg);
-        pid.kp=atoi(msg);
+        pid.kp=atof(msg);
    }
    if(strcmp("pid/ki", topic)==0) {
         printf("MQTT: PID-> ki: %s\n", msg);
-        pid.ki=atoi(msg);
+        pid.ki=atof(msg);
+        //printf("pid/ki:%f\n",pid.ki);                 // Prueba de tipo de variable
    }
    if(strcmp("pid/kd", topic)==0) {
         printf("MQTT: PID-> kd: %s\n", msg);
-        pid.kd=atoi(msg);
+        pid.kd=atof(msg);
    }
    if(strcmp("pid/b", topic)==0) {
         printf("MQTT: PID-> b: %s\n", msg);
-        pid.b=atoi(msg);
+        pid.b=atof(msg);
    }
    if(strcmp("pid/N", topic)==0) {
         printf("MQTT: PID-> N: %s\n", msg);
-        pid.N=atoi(msg);
+        pid.N=atof(msg);
    }
    if(strcmp("pid/h", topic)==0) {
         printf("MQTT: PID-> h: %s\n", msg);
-        pid.h=atoi(msg);
+        pid.h=atof(msg);
    }   
+
+   if(strcmp("pid/delta_adc", topic)==0) {
+        printf("MQTT: PID-> delta_adc: %s\n", msg);
+        pid.delta_adc=atof(msg);
+   }   
+
    if(strcmp("pwm/setpoint", topic)==0) {
         printf("MQTT: PWM-> setpoint_mqtt: %s\n", msg);
-        pwm.setpoint_mqtt=(float) atoi(msg);
+        pwm.setpoint_mqtt=atof(msg);
         if(pwm.setpoint_mqtt>=(float) (ADC_MAX_COUNT-DELTA_ADC*3)){             // Limitador
                 pwm.setpoint_mqtt=(float) (ADC_MAX_COUNT-DELTA_ADC*3); 
                 printf("Se limitó el setpoint a=%4.2f \n",pwm.setpoint_mqtt);
@@ -147,6 +153,7 @@ void MQTT_publish(const char * topic, const char * mensaje) {
         MQTT_subscribe("pid/b");
         MQTT_subscribe("pid/N");
         MQTT_subscribe("pid/h");
+        MQTT_subscribe("pid/delta_adc");
  };
 
  /*******************************************************************************

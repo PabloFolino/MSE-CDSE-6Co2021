@@ -26,6 +26,8 @@ volatile uint32_t data_max=0; // lectura máxima del ADC registrada
 // Prototipo de funcion de la tarea
 void control( void* taskParmPtr );
 
+extern struct pwm_t pwm;
+
 /*******************************************************************************
  Programa principal
 ******************************************************************************/
@@ -36,15 +38,16 @@ void app_main(void)
   int8_t rssi;
   char msg_rssi[10];
   uint16_t contador=0;
-  char msg_contador[19];
+  char msg_send[100];
   char msg_contador_data[5];
+  char msg_datos[10];
 
   // Inicializaciones
 
   // Use POSIX and C standard library functions to work with files.
   IO_adcInits();                   // Inicio los ADCs
   IO_gpioInit();                   // Inicia los gpio y el pwm
-  RTOS_timerInit();                // Instancia la tarea de toma de muestras
+  RTOS_timerInit();                // Instancia la tareas de toma de muestras
   
 
   // Verificación de lo leido
@@ -85,19 +88,40 @@ void app_main(void)
  
   while(1){
     contador++;
-    RTOS_delayMs(10000);
+    RTOS_delayMs(1000);             // Delay de 1seg
     
-    strcpy(msg_contador,CONTADOR);
+    strcpy(msg_send,CONTADOR);
     itoa(contador,msg_contador_data,5);
     rssi=WIFI_getRSSI();
     itoa(rssi,msg_rssi,10);
-    strcat(msg_contador,msg_contador_data);
-    strcat(msg_contador," dBm:");
-    strcat(msg_contador,msg_rssi);
+    strcat(msg_send,msg_contador_data);
+    strcat(msg_send," dBm:");
+    strcat(msg_send,msg_rssi);
 
     MQTT_publish("test/topic1",msg);
-    MQTT_publish("test/rssi", msg_contador);
+    MQTT_publish("test/rssi", msg_send);
     debug("Programa principal");
+
+    itoa(data_ADC2,msg_datos,10);
+    MQTT_publish("test/adc_motor",msg_datos);
+    itoa(data_ADC1,msg_datos,10);
+    MQTT_publish("test/adc_setpoint",msg_datos);
+
+
+    strcat(msg_send," pwm:");
+    itoa((int)pwm.pwm,msg_datos,10);
+    strcat(msg_send,msg_datos);
+    strcat(msg_send,"  pwm.p:");
+    itoa((int)pwm.p,msg_datos,10);
+    strcat(msg_send,msg_datos);
+    strcat(msg_send,"  pwm.i:");
+    itoa((int)pwm.i,msg_datos,10);
+    strcat(msg_send,msg_datos);
+    strcat(msg_send,"  pwm.d:");
+    itoa((int)pwm.d,msg_datos,10);
+    strcat(msg_send,msg_datos);
+    MQTT_publish("test/pwm",msg_send);
+
     // ESP_LOGI(TAG,"test/topic1, mensaje --> %s\n", msg);
     // ESP_LOGI(TAG,"test/rssi, rssi=%d\n", rssi);
     //printf("n=%6d  Estado=%d \n",contador, estado);
@@ -116,7 +140,7 @@ void control( void* taskParmPtr )
 
   // ---------- REPETIR POR SIEMPRE --------------------------
   while(1){
-   //debug("Tarea");
+    //debug("Tarea");
     // Leo los conversores AD
     IO_readAdc();
     // Calculo el PWM

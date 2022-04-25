@@ -1,24 +1,24 @@
 # MSE-CDSE-6Co2021
 Materia de Control Digital de Sistemas Embebidos  de la Maestría de Sistemas Embebidos de la FIUBA.
 
-#Alumnos: 
+## Alumnos: 
 Leonardo Daniel Del Sancio 
 Mauricio	Barroso Benavides
 Pablo Daniel Folino
          
-#Profesores:
+## Profesores:
  Leonardo Carducci 
  Sebastían García Marra
 
-#Título del proyecto
+## Título del proyecto
  
  Sistema didáctico para el control de posiciones de un motor de CC
  
-#Banco de Prueba
+## Banco de Prueba
 
-![](/Videos/banco_de_prueba.mp4)
+![](/Videos/banco.jpeg)
 
-#Descripción
+## Descripción
  
  En este trabajo se estudia el control de posición de un motor de CC. Se
  utiliza un puente H con señales PWM(modulación de ancho de pulso) para
@@ -37,5 +37,5 @@ Pablo Daniel Folino
 	4) Configurara en número de muestras(10-250)
  
  
-#Importante
- Configurar en el archivo sdkconfig.h  la línea "define CONFIG_FREERTOS_HZ 1000". 
+## Importante:
+ Configurar en el archivo **sdkconfig.h**  la línea **"define CONFIG_FREERTOS_HZ 1000"**. 

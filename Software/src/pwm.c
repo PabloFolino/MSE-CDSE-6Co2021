@@ -359,22 +359,22 @@ float PWM_calculo(void){
 
   vTaskSuspendAll();
   // Término proporcional P[k] = Kp * (b*r[k] - y[k])
-  pwm.error=(float) ((pid.b*data_ADC1-data_ADC2)*(PWM_OFFSET/ADC_MAX_COUNT));
+  pwm.error=(float) ((pid.b*data_ADC1-data_ADC2)*ESCALA);
   pwm.p=pid.kp*pwm.error;
 
   // Término integral I[k+1] = I[k] + Ki*h*e[k], con e[k] = r[k] - y[k]
-  err_temp=(float)(data_ADC1-data_ADC2);
+  err_temp=(float)((data_ADC1-data_ADC2)*ESCALA);
   if((pwm.p>=PWM_MAX_POS)||(pwm.p<=PWM_MAX_NEG)|| abs((int) err_temp)<(int)pid.delta_adc) { // Rutina reset Anti Wind-Up
       pwm.i=0;
     }
   else{
-    pwm.i=pwm.i+pid.ki*pid.h*err_temp*(PWM_OFFSET/ADC_MAX_COUNT);
+    pwm.i=pwm.i+pid.ki*pid.h*err_temp;
     if (pwm.i>PI_MAX_POS) pwm.i=PI_MAX_POS;
     if (pwm.i<PI_MAX_NEG) pwm.i=PI_MAX_NEG;
   };
 
   // Término derivativo D[k] = (Kd/(Kd + N*h)) * D[k-1] - (N*h*Kd/(Kd+N*h)) * (y[k]-y[k-1])
-  pwm.d=(pid.kd*pwm.past_d-pid.N*pid.h*pid.kd*(data_ADC2-pwm.past_y))/(pid.kd+pid.N*pid.h);
+  pwm.d=(float)(((pid.kd*pwm.past_d-pid.N*pid.h*pid.kd*(data_ADC2-pwm.past_y))/(pid.kd+pid.N*pid.h))*ESCALA);
   pwm.past_y=data_ADC2;
 
   // Calculo de PID

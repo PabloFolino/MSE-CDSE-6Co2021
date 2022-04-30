@@ -10,9 +10,9 @@
 #define SCD_FOLINO_H_
 
 // PWM
-#define KP_INIT 12.0
-#define KI_INIT 0.01    
-#define KD_INIT 0.0001       
+#define KP_INIT 15.0
+#define KI_INIT 78.0    
+#define KD_INIT 0.00078       
 #define B_INIT  1.0
 #define H_INIT  1.0
 #define N_INI   10.0
@@ -27,12 +27,13 @@
 #define ADC_MAX_COUNT 4096.0        // Con atten = ADC_ATTEN_MAX
 #define ADC_MIN_COUNT 0
 #define SETPOINT_MQTT (ADC_MAX_COUNT/2.0)
-#define DELTA_ADC 100
+#define DELTA_ADC 50
 #define GPIO_EN3 GPIO_NUM_25        // GIRO 1
 #define GPIO_EN4 GPIO_NUM_33        // GIRO 2
 #define GPIO_ENABLE GPIO_NUM_32     // Enable el PWM
 #define PWM_FREQ_HZ 30000
 #define TIME_50US 50
+#define ESCALA PWM_OFFSET/ADC_MAX_COUNT
 
 // GPIO -PWM
 void IO_gpioInit(void);
